@@ -40,11 +40,25 @@ namespace rs = std::ranges;
  */
 auto AnalyseFunctions(const std::vector<std::string> &files,
                       const analyzer::metric::MetricExtractor &metric_extractor) {
-    // здесь ваш код
+    function::FunctionExtractor extractor;
+
+    // clang-format off
+    return files
+            | rv::transform([&extractor](const std::string &file_path) {
+                auto file = analyzer::file::File(file_path);
+                return extractor.Get(file);
+            })
+            | rv::join
+            | rv::transform([&metric_extractor](const auto &function) {
+                auto metrics = metric_extractor.Get(function);
+                return std::pair(function, metrics);
+            })
+            | rs::to<std::vector>();
+    // clang-format on
 }
 
 /**
- * 
+ *
  * @brief Группирует результаты анализа по классам.
  *
  * Эта функция:
@@ -62,7 +76,11 @@ auto AnalyseFunctions(const std::vector<std::string> &files,
  * действительно исчезают из результата.
  */
 auto SplitByClasses(const auto &analysis) {
-    // здесь ваш код
+    // clang-format off
+    return analysis
+            | rv::filter([](const auto &elem) { return elem.first.class_name.has_value(); })
+            | rv::chunk_by([](const auto &a, const auto &b) { return a.first.class_name == b.first.class_name; });
+    // clang-format on
 }
 
 /**
@@ -74,7 +92,10 @@ auto SplitByClasses(const auto &analysis) {
  * - Использует `chunk_by`, поэтому **порядок функций в `analysis` должен быть по файлам**.
  */
 auto SplitByFiles(const auto &analysis) {
-    // здесь ваш код
+    // clang-format off
+    return analysis
+            | rv::chunk_by([](const auto &a, const auto &b) { return a.first.filename == b.first.filename; });
+    // clang-format on
 }
 
 /**
@@ -87,7 +108,8 @@ auto SplitByFiles(const auto &analysis) {
  */
 void AccumulateFunctionAnalysis(const auto &analysis,
                                 const analyzer::metric_accumulator::MetricsAccumulator &accumulator) {
-    // здесь ваш код
+    rs::for_each(analysis,
+                 [&accumulator](const auto &elem) { accumulator.AccumulateNextFunctionResults(elem.second); });
 }
 
 }  // namespace analyzer
