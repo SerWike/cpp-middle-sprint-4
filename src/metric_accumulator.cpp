@@ -1,6 +1,7 @@
 #include "metric_accumulator.hpp"
 #include "metric.hpp"
 
+#include <stdexcept>
 #include <unistd.h>
 
 #include <algorithm>
@@ -33,6 +34,8 @@ namespace analyzer::metric_accumulator {
  */
 void MetricsAccumulator::AccumulateNextFunctionResults(const std::vector<metric::MetricResult> &metric_results) const {
     std::ranges::for_each(metric_results, [this](const metric::MetricResult &metric) {
+        if (!this->accumulators.contains(metric.metric_name))
+            throw std::runtime_error(std::format("Not registered accumulator for metric name: {}", metric.metric_name));
         this->accumulators.at(metric.metric_name)->Accumulate(metric);
     });
 }

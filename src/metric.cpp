@@ -30,8 +30,12 @@ void MetricExtractor::RegisterMetric(std::unique_ptr<IMetric> metric) { metrics.
  * к переданной функции `func` и собирает результаты в вектор.
  */
 MetricResults MetricExtractor::Get(const function::Function &func) const {
-    std::vector<MetricResult> result;
-    result.reserve(metrics.size());
+    MetricResults result;
+    try {
+        result.reserve(metrics.size());
+    } catch (const std::exception &e) {
+        throw std::runtime_error(std::format("Failed to reserve size for Metric Results: {}", e.what()));
+    }
 
     std::ranges::transform(metrics, std::back_inserter(result),
                            [&func](auto &metric) { return metric->Calculate(func); });

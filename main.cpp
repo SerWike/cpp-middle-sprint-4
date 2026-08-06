@@ -1,26 +1,11 @@
 #include <unistd.h>
 
 #include <algorithm>
-#include <array>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <filesystem>
-#include <fstream>
-#include <functional>
-#include <iomanip>
-#include <iostream>
 #include <print>
-#include <ranges>
-#include <sstream>
-#include <string>
 #include <variant>
-#include <vector>
 
 #include "analyse.hpp"
 #include "cmd_options.hpp"
-#include "file.hpp"
-#include "function.hpp"
 #include "metric.hpp"
 #include "metric_accumulator.hpp"
 #include "metric_accumulator_impl/accumulators.hpp"
