@@ -1,5 +1,6 @@
 #include "metric_impl/cyclomatic_complexity.hpp"
 
+#include <string_view>
 #include <unistd.h>
 
 #include <algorithm>
@@ -65,5 +66,16 @@ MetricResult::ValueType CyclomaticComplexityMetric::CalculateImpl(const function
     // в цикле (это допустимо, так как вы работаете со строковым представлением AST,
     // а не с исходным кодом напрямую).
 
+    int result = 0;
+    unsigned long pos = 0;
+    for (auto &node : complexity_nodes) {
+        pos = function_ast.find(node);
+        while (pos != std::string_view::npos) {
+            ++result;
+            pos = function_ast.find(node, pos + 1);
+        }
+    }
+
+    return result + 1;
 }
 }  // namespace analyzer::metric::metric_impl

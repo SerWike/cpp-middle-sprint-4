@@ -1,5 +1,5 @@
 class AdvancedProcessor(SimpleProcessor):
-    """Продвинутый процессор данных с дополнительной функциональностью"""
+    # Продвинутый процессор данных с дополнительной функциональностью
     
     def __init__(self, multiplier: float = 1.0, offset: float = 0.0):
         super().__init__(multiplier)
@@ -7,17 +7,17 @@ class AdvancedProcessor(SimpleProcessor):
     
     @log_execution(log_level=LogLevel.DEBUG)
     def process(self, data: List[Union[int, float]]) -> List[float]:
-        """Расширенная обработка данных"""
+        # Расширенная обработка данных
         processed = super().process(data)
         return [x + self.offset for x in processed]
     
     def __call__(self, data: List[float]) -> List[float]:
-        """Поддержка вызова как функции"""
+        # Поддержка вызова как функции
         return self.process(data)
 
 
 def lambda_demo():
-    """Демонстрация использования лямбда-функций"""
+    # Демонстрация использования лямбда-функций
     numbers = [1, 2, 3, 4, 5]
     
     # Лямбда для фильтрации
